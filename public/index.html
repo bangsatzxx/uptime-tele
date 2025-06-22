@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Uptime Dashboard</title>
+  <style>
+    body { font-family: sans-serif; background: #121212; color: #eee; padding: 2em }
+    table { width: 100%; border-collapse: collapse }
+    th, td { border: 1px solid #444; padding: 10px; text-align: left }
+    th { background-color: #222 }
+    td.up { color: lightgreen }
+    td.down { color: tomato }
+  </style>
+</head>
+<body>
+  <h1>🔍 Uptime Monitoring Dashboard</h1>
+  <table>
+    <thead>
+      <tr><th>URL</th><th>Status</th><th>Latency</th><th>Interval</th></tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+  <script>
+    async function fetchData() {
+      const res = await fetch('/data')
+      const data = await res.json()
+      const body = document.getElementById('dataBody')
+      body.innerHTML = ''
+      data.forEach(d => {
+        body.innerHTML += `<tr>
+          <td>${d.url}</td>
+          <td class="${d.lastStatus}">${d.lastStatus}</td>
+          <td>${d.lastLatency || 'N/A'} ms</td>
+          <td>${d.interval} s</td>
+        </tr>`
+      })
+    }
+    fetchData()
+    setInterval(fetchData, 10000)
+  </script>
+</body>
+</html>
